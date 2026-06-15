@@ -1,0 +1,3 @@
+[submodule "apps/xxsh"]
+	path = apps/xxsh
+	url = https://github.com/RUN1-CS/XXSH.git
