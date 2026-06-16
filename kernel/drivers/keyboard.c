@@ -77,7 +77,10 @@ char *readline(const char *prompt, char *buffer) {
         } else if (c == '\b') { // Backspace key pressed
             if (length > 0) {
                 length--;
-                str_print("\b \b"); // Erase the last character from the screen
+                buffer[length] = '\0';
+                clear_line();
+                str_print(prompt);
+                str_print(buffer);
             }
         } else if (c != 0) { // Valid character received
             if (length + 1 >= KEYBOARD_BUFFER_SIZE) {

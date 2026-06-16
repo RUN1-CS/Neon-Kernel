@@ -95,6 +95,16 @@ int scroll_ln(int offset){
     return offset - 2 * MAX_COLS;
 }
 
+// Clearing Line
+void clear_line(){
+    int offset = get_cursor();
+    int row = get_row_from_offset(offset);
+    for (int col = 0; col < MAX_COLS; col++) {
+        set_char_at_video_memory(' ', get_offset(col, row));
+    }
+    set_cursor(get_offset(0, row));
+}
+
 // Clearing Screen
 void clear_screen(){
     for (int i = 0; i < MAX_COLS * MAX_ROWS; ++i) {

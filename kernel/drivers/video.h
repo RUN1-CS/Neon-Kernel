@@ -35,6 +35,8 @@ void memory_copy(char *source, char *dest, int nbytes);
 
 int scroll_ln(int offset);
 
+void clear_line();
+
 void clear_screen();
 
 #endif // VIDEO_H
