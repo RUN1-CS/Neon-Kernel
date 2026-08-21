@@ -1,14 +1,15 @@
 # Toolchain definition
 CC = gcc
 LD = ld
-ASM = nasm
+AS = as
+OBJCOPY = objcopy
 
 CFLAGS = -m32 -ffreestanding -fno-pie -fno-stack-protector -O2 -Wall -Wextra
-ASMFLAGS_BIN = -f bin
-ASMFLAGS_ELF = -f elf32
+ASFLAGS = --32
 
 # Target Outputs
 BOOT_BIN = boot/boot.bin
+BOOT_OBJ = boot/boot.o
 KERNEL_BIN = kernel/kernel.bin
 OS_IMAGE = SSn-DOS.img
 
@@ -34,12 +35,15 @@ $(OS_IMAGE): $(BOOT_BIN) $(KERNEL_BIN)
 	truncate -s 1440k $(OS_IMAGE)
 
 # Step 4A: Assemble the 512-byte master bootloader to flat binary
-$(BOOT_BIN): boot/boot.asm
-	$(ASM) $(ASMFLAGS_BIN) $< -o $@
+$(BOOT_BIN): $(BOOT_OBJ)
+	$(OBJCOPY) -O binary -j .text $< $@
+
+$(BOOT_OBJ): boot/boot.s
+	$(AS) $(ASFLAGS) $< -o $@
 
 # Rule to assemble kernel assembly files into ELF32 object files
 kernel/drivers/%.o: kernel/drivers/%.asm
-	$(ASM) $(ASMFLAGS_ELF) $< -o $@
+	$(AS) $(ASFLAGS) $< -o $@
 
 # Step 4B: Link all C and ASM object files into flat kernel.bin using the Linker Script
 $(KERNEL_BIN): $(KERNEL_OBJECTS) $(KERNEL_ASM_OBJECTS)
@@ -54,8 +58,8 @@ apps/%.o: apps/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 run: $(OS_IMAGE)
-	qemu-system-i386 -fda $(OS_IMAGE)
+	qemu-system-i386 -drive file=$(OS_IMAGE),if=floppy,format=raw
 
 clean:
-	rm -f $(BOOT_BIN) $(KERNEL_BIN) $(KERNEL_OBJECTS) $(KERNEL_ASM_OBJECTS) $(OS_IMAGE)
+	rm -f $(BOOT_BIN) $(BOOT_OBJ) $(KERNEL_BIN) $(KERNEL_OBJECTS) $(KERNEL_ASM_OBJECTS) $(OS_IMAGE)
 	find . -name "*.o" -type f -delete

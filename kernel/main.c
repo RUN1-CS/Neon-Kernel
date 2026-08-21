@@ -16,26 +16,26 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "drivers/video.h"
-#include "drivers/keyboard.h"
 #include "../apps/xxsh/shell.h"
+#include "drivers/keyboard.h"
+#include "drivers/video.h"
 
 void kernel_main(void) {
-    // 1. Core OS Init
-    // init_gdt();
-    // init_idt();
-    // init_video();
-    // init_keyboard();
+  // 1. Core OS Init
+  // init_gdt();
+  // init_idt();
+  // init_video();
+  // init_keyboard();
 
-    clear_screen();
+  clear_screen();
 
-    str_print("Shin Seiki Disk Operating System Boot Sequence Completed\n");
+  str_print("Shin Seiki Disk Operating System Boot Sequence Completed\n");
 
-    // 2. Start the shell
-    xxsh_loop();
+  // 2. Start the shell
+  xxsh_loop();
 
-    // Fallback infinite loop to prevent the kernel from exiting
-    while(1) {
-        __asm__ volatile ("hlt");
-    }
+  // Fallback infinite loop to prevent the kernel from exiting
+  while (1) {
+    __asm__ volatile("hlt");
+  }
 }

@@ -2,6 +2,7 @@
 #define STRING_H
 
 #include <stddef.h>
+#include <stdarg.h>
 
 int strcmp(const char *s1, const char *s2);
 
@@ -12,5 +13,7 @@ size_t strlen(const char *str);
 char *strcpy(char *dest, const char *src);
 
 char *strtok_r(char *str, const char *delim, char **saveptr);
+
+char *snprintf(char *buffer, const char *format, ...);
 
 #endif // STRING_H

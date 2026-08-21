@@ -23,7 +23,7 @@ int get_cursor();
 
 void set_char_at_video_memory(char character, int offset);
 
-void str_print(char *string);
+void str_print(const char *string);
 
 int get_row_from_offset(int offset);
 

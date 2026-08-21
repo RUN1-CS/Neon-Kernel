@@ -12,6 +12,6 @@ unsigned char get_scancode(void);
 
 char keyboard_get_char(void);
 
-char * readline(const char *prompt, char *buffer);
+char *readline(const char *prompt, char *buffer);
 
 #endif
