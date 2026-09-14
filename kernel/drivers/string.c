@@ -118,4 +118,64 @@ char *snprintf(char *buffer, const char *format, ...) {
   return buffer;
 }
 
+char *sprintf(char *buffer, const char *format, ...) {
+    va_list args;
+    va_start(args, format);
+    for (int i = 0; format[i] != '\0'; i++) {
+        if (format[i] == '%') {
+            i++;
+            switch (format[i]) {
+                case 'd': {
+                    int value = va_arg(args, int);
+                    char temp[12];
+                    snprintf(temp, "%d", value);
+                    strcpy(buffer, temp);
+                    buffer += strlen(temp);
+                    break;
+                }
+                case 's': {
+                    char *value = va_arg(args, char *);
+                    strcpy(buffer, value);
+                    buffer += strlen(value);
+                    break;
+                }
+                default:
+                    *buffer++ = format[i];
+                    break;
+            }
+        } else {
+            *buffer++ = format[i];
+        }
+    }
+    *buffer = '\0';
+    va_end(args);
+    return buffer;
+}
+
+int atoi(const char *str) {
+    int result = 0;
+    int sign = 1;
+
+    // Skip whitespace
+    while (isspace(*str)) {
+        str++;
+    }
+
+    // Handle optional sign
+    if (*str == '-') {
+        sign = -1;
+        str++;
+    } else if (*str == '+') {
+        str++;
+    }
+
+    // Convert digits to integer
+    while (*str >= '0' && *str <= '9') {
+        result = result * 10 + (*str - '0');
+        str++;
+    }
+
+    return sign * result;
+}
+
 #endif // STRING_C

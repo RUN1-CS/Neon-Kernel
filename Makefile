@@ -18,6 +18,8 @@ KERNEL_SOURCES = kernel/main.c \
                  kernel/drivers/video.c \
                  kernel/drivers/keyboard.c \
                  kernel/drivers/string.c \
+				 kernel/drivers/filesystem/file_int.c \
+				 kernel/drivers/filesystem/disk.c \
                  apps/xxsh/shell.c \
                  apps/xxsh/executor.c
 

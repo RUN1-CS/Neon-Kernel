@@ -3,32 +3,19 @@
 
 #include "keyboard.h"
 #include "video.h"
+#include "io.h"
 
 #include <stddef.h>
-
-// Access to hardware I/O ports
-unsigned char inb(unsigned short port) {
-  unsigned char result;
-  // Read a byte from 'port' and store it in 'result'
-  __asm__ volatile("inb %1, %0" : "=a"(result) : "Nd"(port));
-  return result;
-}
-
-// Write a byte to a hardware I/O port
-void outb(unsigned short port, unsigned char data) {
-  // Write 'data' out to 'port'
-  __asm__ volatile("outb %0, %1" : : "a"(data), "Nd"(port));
-}
 
 // Poll the keyboard controller to get the next scancode
 unsigned char get_scancode(void) {
   // Bit 0 (0x01) of port 0x64 indicates the output buffer is full (data is
   // ready)
-  while ((inb(0x64) & 0x01) == 0) {
+  while ((port_byte_in(0x64) & 0x01) == 0) {
     // Loop endlessly (poll) until a key is pressed
   }
   // Read and return the raw scancode from the data port
-  return inb(0x60);
+  return port_byte_in(0x60);
 }
 
 // Translation array for standard US Keyboard Layout (Set 1)

@@ -16,4 +16,8 @@ char *strtok_r(char *str, const char *delim, char **saveptr);
 
 char *snprintf(char *buffer, const char *format, ...);
 
+char *sprintf(char *buffer, const char *format, ...);
+
+int atoi(const char *str);
+
 #endif // STRING_H
