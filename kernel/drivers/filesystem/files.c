@@ -15,7 +15,7 @@
  * The file table is cached in RAM and written back after every change.
  */
 
-#define FS_MAGIC 0x53465331u /* "SFS1" */
+#define SIMPLEFS_MAGIC 0x53465331u /* "SFS1" */
 #define FS_VERSION 1u
 
 #define FS_TABLE_LBA (FS_START_LBA + 1)
@@ -140,7 +140,7 @@ int fs_format(uint32_t total_sectors) {
 
   fs_super_t *sb = (fs_super_t *)sector_buf;
   fs_memset(sector_buf, 0, FS_SECTOR_SIZE);
-  sb->magic = FS_MAGIC;
+  sb->magic = SIMPLEFS_MAGIC;
   sb->version = FS_VERSION;
   sb->total_sectors = total_sectors;
   ata_write_sector(FS_START_LBA, sector_buf);
@@ -155,7 +155,7 @@ int fs_mount(void) {
   ata_read_sector(FS_START_LBA, sector_buf);
   fs_super_t *sb = (fs_super_t *)sector_buf;
 
-  if (sb->magic != FS_MAGIC || sb->version != FS_VERSION) {
+  if (sb->magic != SIMPLEFS_MAGIC || sb->version != FS_VERSION) {
     fs_mounted = 0;
     return FS_ERR_BAD_MAGIC;
   }

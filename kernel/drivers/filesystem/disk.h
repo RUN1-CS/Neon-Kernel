@@ -4,8 +4,6 @@
 #include <stdint.h>
 
 #define SECTOR_SIZE 512
-#define FS_MAGIC 0x53555052
-
 typedef struct __attribute__((packed)) {
   uint32_t magic;
   uint32_t block_size;
@@ -28,10 +26,6 @@ typedef struct __attribute__((packed)) {
 #define ATA_STATUS_STATUS 0x1F7
 #define ATA_CMD_WRITE_SECTORS 0x30
 #define ATA_CMD_CACHE_FLUSH 0xE7
-
-static void ata_wait_ready(void);
-
-static void ata_wait_drq(void);
 
 void ata_read_sector(uint32_t lba, uint8_t *buffer);
 
