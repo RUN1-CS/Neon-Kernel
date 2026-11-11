@@ -41,8 +41,9 @@ $(OS_IMAGE): $(BOOT_BIN) $(KERNEL_BIN)
 $(BOOT_BIN): $(BOOT_OBJ)
 	$(OBJCOPY) -O binary -j .text $< $@
 
-$(BOOT_OBJ): boot/boot.s
-	$(AS) $(ASFLAGS) $< -o $@
+# Needs the kernel size, so the bootloader loads exactly as many sectors as the kernel has
+$(BOOT_OBJ): boot/boot.s $(KERNEL_BIN)
+	$(AS) $(ASFLAGS) --defsym KERNEL_SECTORS=$$(( ($$(stat -c%s $(KERNEL_BIN)) + 511) / 512 )) $< -o $@
 
 # Rule to assemble kernel assembly files into ELF32 object files
 kernel/drivers/%.o: kernel/drivers/%.asm
@@ -60,8 +61,12 @@ kernel/%.o: kernel/%.c
 apps/%.o: apps/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-run: $(OS_IMAGE)
-	qemu-system-i386 -drive file=$(OS_IMAGE),if=floppy,format=raw
+# Boot from the floppy image; give the ATA driver its own persistent disk (fs.img).
+run: $(OS_IMAGE) fs.img
+	qemu-system-i386 -drive file=$(OS_IMAGE),if=floppy,format=raw -drive file=fs.img,if=ide,format=raw -serial stdio
+
+fs.img:
+	truncate -s 10M fs.img
 
 clean:
 	rm -f $(BOOT_BIN) $(BOOT_OBJ) $(KERNEL_BIN) $(KERNEL_OBJECTS) $(KERNEL_ASM_OBJECTS) $(OS_IMAGE)

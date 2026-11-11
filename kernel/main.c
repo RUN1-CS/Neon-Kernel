@@ -20,18 +20,18 @@
 #include "drivers/keyboard.h"
 #include "drivers/video.h"
 
-void kernel_main(void) {
-  // 1. Core OS Init
-  // init_gdt();
-  // init_idt();
-  // init_video();
-  // init_keyboard();
+/* Provided by linker.ld */
+extern char __bss_start[], __bss_end[];
+
+void __attribute__((section(".text.entry"))) kernel_main(void) {
+  for (volatile char *p = __bss_start; p < __bss_end; p++)
+    *p = 0;
 
   clear_screen();
 
   str_print("Shin Seiki Disk Operating System Boot Sequence Completed\n");
 
-  // 2. Start the shell
+  // Start the shell
   xxsh_loop();
 
   // Fallback infinite loop to prevent the kernel from exiting
